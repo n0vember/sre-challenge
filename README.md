@@ -122,6 +122,28 @@ We would like these 2 apps, `invoice-app` and `payment-provider`, to run in a K8
 5. Complete `deploy.sh` in order to automate all the steps needed to have both apps running in a K8s cluster.
 6. Complete `test.sh` so we can validate your solution can successfully pay all the unpaid invoices and return a list of all the paid invoices.
 
+#### Solving
+
+##### invoice-app and payment-provider access (points 1 & 2)
+
+In order to make invoice-app accessible from outside the cluster and not payment-provider, we will use two differents kinds of services: NodePort for invoice-app and ClusterIP for payment-provider.
+
+Here is a test of this configuration:
+
+```
+kubectl apply -f invoice-app/service.yaml
+kubectl apply -f payment-provider/service.yaml
+minikube service invoice-app --url
+http://192.168.49.2:30738
+curl http://192.168.49.2:30738
+404 page not found
+curl http://192.168.49.2:30738/invoices
+[{"InvoiceId":"I1","Value":12.15,"Currency":"EUR","IsPaid":false},{"InvoiceId":"I2","Value":10.25,"Currency":"GBP","IsPaid":false},{"InvoiceId":"I3","Value":66.13,"Currency":"DKK","IsPaid":false}]
+minikube service payment-provider --url
+😿  service default/payment-provider has no node port
+
+```
+
 ### Part 3 - Questions
 
 Feel free to express your thoughts and share your experiences with real-world examples you worked with in the past.
