@@ -50,6 +50,65 @@ payment-provider-abcdef1234-1ab25   1/1     Ready                        0      
 
 Write here about the :bug:, the fix, how you found it, and anything else you want to share.
 
+#### Solving
+
+I am using minikube for a quick and generic testing environment.
+
+##### Creating the images
+
+Images are not public images so I want to build them locally and then deploy using the provided deployment.yaml
+
+```
+docker build -t invoice-app:latest -f invoice-app/Dockerfile invoice-app/
+docker build -t payment-provider:latest -f payment-provider/Dockerfile payment-provider/
+kubectl apply -f invoice-app/deployment.yaml
+```
+
+I then find myself with a ErrImagePull error.
+
+```
+NAMESPACE              NAME                                         READY   STATUS             RESTARTS      AGE
+default                invoice-app-779bb6f9d5-9744d                 0/1     ErrImagePull       0             2m34s
+default                invoice-app-779bb6f9d5-pmgkw                 0/1     ImagePullBackOff   0             2m34s
+default                invoice-app-779bb6f9d5-zkp5j                 0/1     ErrImagePull       0             2m34s
+```
+
+This is due to the fact that minikube runs its own local repository and images must be built against it.
+
+```
+eval $(minikube -p minikube docker-env)
+docker build -t invoice-app:latest -f invoice-app/Dockerfile invoice-app/
+docker build -t payment-provider:latest -f payment-provider/Dockerfile payment-provider/
+kubectl apply -f invoice-app/deployment.yaml
+```
+
+We still have an error which is this time CreateContainerConfigError, which must be the :bug: we are looking for. A quick lookup at one of the containers tells us more:
+
+```
+kubectl describe pod invoice-app-779bb6f9d5-4qp7t | sed '/^Events:/,$!d'
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  16s               default-scheduler  Successfully assigned default/invoice-app-779bb6f9d5-4qp7t to minikube
+  Normal   Pulled     2s (x3 over 16s)  kubelet            Container image "invoice-app:latest" already present on machine
+  Warning  Failed     2s (x3 over 16s)  kubelet            Error: container has runAsNonRoot and image will run as root (pod: "invoice-app-779bb6f9d5-4qp7t_default(0da2e457-0e41-4df7-a3df-8950d6a4a06e)", container: main)
+```
+
+In the deployment.yaml we indeed have runAsNonRoot which is configured, but not what user to use instead of root. We could remove the runAsNonRoot configuration but we should avoid running container as root. We add a `runAsUser: 1042` directive in the securityContext to run as an arbitrary user and fix the issue. The same configuration is done in both invoice-app and payment-method. We apply again and the pods are running.
+
+```
+kubectl apply -f invoice-app/deployment.yaml
+kubectl apply -f payment-provider/deployment.yaml
+kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+invoice-app-78f496966f-5h6h2        1/1     Running   0          36s
+invoice-app-78f496966f-fctpp        1/1     Running   0          34s
+invoice-app-78f496966f-qvx6f        1/1     Running   0          33s
+payment-provider-556d674db9-8f9mp   1/1     Running   0          18s
+payment-provider-556d674db9-fvt7s   1/1     Running   0          18s
+payment-provider-556d674db9-q7fw8   1/1     Running   0          18s
+```
+
 ### Part 2 - Setup the apps
 
 We would like these 2 apps, `invoice-app` and `payment-provider`, to run in a K8s cluster and this is where you come in!

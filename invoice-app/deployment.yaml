@@ -18,3 +18,4 @@ spec:
         imagePullPolicy: IfNotPresent
       securityContext:
         runAsNonRoot: true
+        runAsUser: 1042
