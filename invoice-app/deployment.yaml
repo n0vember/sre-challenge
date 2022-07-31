@@ -16,6 +16,15 @@ spec:
       - name: main
         image: invoice-app:latest
         imagePullPolicy: IfNotPresent
+        ports:
+          - name: invoice-app
+            containerPort: 8081
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: invoice-app
+          initialDelaySeconds: 3
+          periodSeconds: 3
       securityContext:
         runAsNonRoot: true
         runAsUser: 1042

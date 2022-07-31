@@ -144,6 +144,12 @@ minikube service payment-provider --url
 
 ```
 
+##### Best practices (point 3)
+
+The following points are implemented:
+
+- liveness probe
+
 ### Part 3 - Questions
 
 Feel free to express your thoughts and share your experiences with real-world examples you worked with in the past.

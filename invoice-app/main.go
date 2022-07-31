@@ -25,6 +25,7 @@ func setupRouter() *gin.Engine {
 	r := gin.New()
 	r.POST("invoices/pay", pay)
 	r.GET("invoices", getInvoices)
+	r.GET("healthz", health)
 	return r
 }
 
@@ -32,6 +33,10 @@ func getInvoices(c *gin.Context) {
 	invoices := dbClient.GetInvoices()
 
 	c.JSON(http.StatusOK, invoices)
+}
+
+func health(c *gin.Context) {
+  c.JSON(http.StatusOK, "OK")
 }
 
 func pay(c *gin.Context) {
