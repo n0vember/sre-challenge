@@ -74,3 +74,7 @@ spec:
       targetPort: 8081
   selector:
     app: invoice-app
+  sessionAffinity: "ClientIP"
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10
