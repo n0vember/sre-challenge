@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,3 +39,20 @@ spec:
         runAsNonRoot: true
         runAsUser: 1042
         runAsGroup: 1042
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoice-app
+  labels:
+    app: invoice-app
+    part-of: challenge
+    component: frontend
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: invoice-app
