@@ -25,6 +25,13 @@ spec:
             port: invoice-app
           initialDelaySeconds: 3
           periodSeconds: 3
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1042

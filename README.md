@@ -149,6 +149,7 @@ minikube service payment-provider --url
 The following points are implemented:
 
 - liveness probe
+- resource limits
 
 ### Part 3 - Questions
 
