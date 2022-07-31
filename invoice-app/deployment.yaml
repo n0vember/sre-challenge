@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: invoice-app
+        part-of: challenge
+        component: frontend
     spec:
       containers:
       - name: main

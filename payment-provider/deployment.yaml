@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: payment-provider
+        part-of: challenge
+        component: backend
     spec:
       containers:
       - name: main
