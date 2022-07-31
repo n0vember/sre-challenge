@@ -16,6 +16,15 @@ spec:
       - name: main
         image: payment-provider:latest
         imagePullPolicy: IfNotPresent
+        ports:
+          - name: payment-prov
+            containerPort: 8082
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: payment-prov
+          initialDelaySeconds: 3
+          periodSeconds: 3
       securityContext:
         runAsNonRoot: true
         runAsUser: 1042

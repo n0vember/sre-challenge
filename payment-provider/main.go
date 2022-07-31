@@ -20,7 +20,12 @@ func main() {
 func setupRouter() *gin.Engine {
 	r := gin.New()
 	r.POST("payments/pay", pay)
+	r.GET("healthz", health)
 	return r
+}
+
+func health(c *gin.Context) {
+  c.JSON(http.StatusOK, "OK")
 }
 
 func pay(c *gin.Context) {
