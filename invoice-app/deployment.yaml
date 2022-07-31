@@ -37,3 +37,4 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 1042
+        runAsGroup: 1042

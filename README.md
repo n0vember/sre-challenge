@@ -151,6 +151,7 @@ The following points are implemented:
 - liveness probe
 - resource limits
 - set labels
+- improve securityContext
 
 ### Part 3 - Questions
 
