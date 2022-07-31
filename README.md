@@ -157,6 +157,10 @@ The following points are implemented:
 
 We can use a configMap to pass invoice-app the URL it can access payment-provider with. The go program of invoice-app must then be changed to use the environment variable.
 
+##### deployment script (point 5)
+
+`deploy.sh` is completed. When ran without any option, it starts minikube if needed and applies configuration. There are two option --force (or -f) to destroy all components prior to application and --destroy (or -d) to destroy and exit.
+
 ### Part 3 - Questions
 
 Feel free to express your thoughts and share your experiences with real-world examples you worked with in the past.
