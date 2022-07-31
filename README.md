@@ -175,6 +175,40 @@ Feel free to express your thoughts and share your experiences with real-world ex
 2. There are 2 microservices that are maintained by 2 different teams. Each team should have access only to their service inside the cluster. How would you approach this?
 3. How would you prevent other services running in the cluster to communicate to `payment-provider`?
 
+#### Solving
+
+##### "production ready" (point 1)
+
+The following points could be implemented to move torward a production environment:
+
+- Containers should be made available on a repository. Probably not on docker hub, but if for instance gitlab is used, the container registry of the git repository could be a good place.
+
+- Building and deploying should be done through CI. This way, everything is done in a controled and reproductible environment, and is also traced.
+
+- Everything should be automated and tested (shell scripts, go apps...).
+
+- Starting from the previous points, containers used should be versioned (no :latest in image selection).
+
+- Monitoring and supervision should be set up. Whereas /healthz could be use for supervision, monitoring shoud require a new endpoint to get metrics from. First things that come to mind are the number of unpaid and paid invoices, the total amount of unpaid invoices, time spent processing invoices...
+
+- Database here is local to each container. It should get its own deployment, using a clustered DB with a persistent storage.
+
+- A load balancer should be used instead of nodePort for invoice-app to equilibrate the charge. Also an ingress should be defined.
+
+- An authentication should be involved for restricting access to the app.
+
+These are only some points. The list could continue.
+
+##### teams access (point 2)
+
+Teams accesses could be restricted to their component only using namespaces. We here have used the default namespace, but considering bigger clusters or access separation, namespaces are to be considered.
+
+Namespace would also cut communication between the two apps. A cross-namespace routing would then be configured using shared gateways.
+
+##### acess restriction to payment-provider (point 3)
+
+This should be done through a network policy to allow access from invoice-app and invoice-app only. Maybe a securisation by using https access.
+
 ## What matters to us?
 
 We expect the solution to run but we also want to know how you work and what matters to you as an engineer.
