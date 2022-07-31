@@ -3,6 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment-provider
+  labels:
+    app: payment-provider
+    part-of: challenge
+    component: backend
 spec:
   replicas: 3
   selector:

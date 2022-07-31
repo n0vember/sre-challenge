@@ -14,6 +14,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: invoice-app
+  labels:
+    app: invoice-app
+    part-of: challenge
+    component: frontend
 spec:
   replicas: 3
   selector:
