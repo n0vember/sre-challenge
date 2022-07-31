@@ -1,4 +1,15 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: invoice-app
+  labels:
+    app: invoice-app
+    part-of: challenge
+    component: frontend
+data:
+  payment_url: "http://payment-provider:8082/payments/pay"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +30,9 @@ spec:
       - name: main
         image: invoice-app:latest
         imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: invoice-app
         ports:
           - name: invoice-app
             containerPort: 8081

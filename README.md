@@ -153,6 +153,10 @@ The following points are implemented:
 - set labels
 - improve securityContext
 
+##### pass backend URL to frontend (point 4)
+
+We can use a configMap to pass invoice-app the URL it can access payment-provider with. The go program of invoice-app must then be changed to use the environment variable.
+
 ### Part 3 - Questions
 
 Feel free to express your thoughts and share your experiences with real-world examples you worked with in the past.
