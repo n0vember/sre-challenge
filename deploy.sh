@@ -38,6 +38,11 @@ challengeDestroy() {
   kubectl delete deployments.apps,service,configMaps -l part-of=challenge
 }
 
+build() {
+  local app="$1"
+  docker build -t ${app}:latest -f ${app}/Dockerfile ${app}/
+}
+
 main() {
   local apps="invoice-app payment-provider"
   local forceFlag=0
@@ -62,6 +67,7 @@ main() {
   [ ${forceFlag} -eq 0 -a ${destroyFlag} -eq 0 ] || challengeDestroy
   [ ${destroyFlag} -eq 0 ] || exit
   for app in ${apps} ; do
+    build ${app}
     appDeploy ${app}
   done
 }
